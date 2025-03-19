@@ -27,7 +27,7 @@ function clearGallery() {
 
 const uploadImage = document.getElementById('uploadImage');
 const topText = document.getElementById('topText');
-const bottomText = document.getElementById('bottomText');
+bottomText = document.getElementById('bottomText');
 const fontSelector = document.getElementById('fontSelector');
 const fontSize = document.getElementById('fontSize');
 const textColor = document.getElementById('textColor');
@@ -94,18 +94,29 @@ textColor.addEventListener('input', drawMeme);
 
 downloadButton.addEventListener('click', function() {
     if (!checkImageLoaded()) return;
+    
     const memeURL = canvas.toDataURL();
     let memes = JSON.parse(localStorage.getItem('memes')) || [];
     memes.push(memeURL);
     localStorage.setItem('memes', JSON.stringify(memes));
     displayGallery();
-    
+
     const fileName = prompt('Entrez le nom de votre mème :', 'meme');
-    if (!fileName) return;
+    if (!fileName || fileName.trim() === '') {
+        alert("❌ Nom invalide. Téléchargement annulé.");
+        return;
+    }
+
+    alert("✅ Téléchargement en cours...");
+
     const link = document.createElement('a');
-    link.download = fileName + '.png';
+    link.download = fileName.trim() + '.png';
     link.href = memeURL;
+    document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
+
+    alert("✅ Téléchargement terminé !");
 });
 
 shareButton.addEventListener('click', function() {

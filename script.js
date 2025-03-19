@@ -98,9 +98,6 @@ downloadButton.addEventListener('click', function() {
     let memes = JSON.parse(localStorage.getItem('memes')) || [];
     memes.push(memeURL);
     localStorage.setItem('memes', JSON.stringify(memes));
-
-    // Mettre à jour la galerie
-    displayGallery();
 });
 
 // Partager le mème
@@ -131,33 +128,3 @@ function dataURLtoBlob(dataURL) {
     }
     return new Blob([u8arr], {type:mime});
 }
-
-// Fonction pour afficher la galerie
-function displayGallery() {
-    const galleryDiv = document.getElementById('gallery');
-    galleryDiv.innerHTML = '';
-    let memes = JSON.parse(localStorage.getItem('memes')) || [];
-
-    if (memes.length === 0) {
-        galleryDiv.innerHTML = '<p>Aucun mème enregistré.</p>';
-        return;
-    }
-
-    memes.forEach(url => {
-        const img = document.createElement('img');
-        img.src = url;
-        img.classList.add('meme-image');
-        galleryDiv.appendChild(img);
-    });
-}
-
-// Fonction pour effacer la galerie
-function clearGallery() {
-    localStorage.removeItem('memes');
-    displayGallery();
-}
-
-// Afficher la galerie au chargement de la page
-document.addEventListener("DOMContentLoaded", function() {
-    displayGallery();
-});

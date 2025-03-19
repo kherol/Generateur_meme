@@ -7,6 +7,11 @@ function displayGallery() {
     galleryDiv.innerHTML = ''; // Effacer l'ancien contenu
     let memes = JSON.parse(localStorage.getItem('memes')) || [];
 
+    if (memes.length === 0) {
+        galleryDiv.innerHTML = '<p>Aucun mème enregistré.</p>';
+        return;
+    }
+
     memes.forEach(url => {
         const img = document.createElement('img');
         img.src = url;
@@ -128,4 +133,3 @@ function dataURLtoBlob(dataURL) {
     }
     return new Blob([u8arr], {type:mime});
 }
-

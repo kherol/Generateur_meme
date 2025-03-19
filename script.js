@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function displayGallery() {
     const galleryDiv = document.getElementById('gallery');
-    galleryDiv.innerHTML = ''; // Effacer l'ancien contenu
+    galleryDiv.innerHTML = '';
     let memes = JSON.parse(localStorage.getItem('memes')) || [];
 
     if (memes.length === 0) {
@@ -21,13 +21,13 @@ function displayGallery() {
 }
 
 function clearGallery() {
-    localStorage.removeItem('memes'); // Supprimer les mèmes stockés
-    displayGallery(); // Mettre à jour l'affichage
+    localStorage.removeItem('memes');
+    displayGallery();
 }
 
 const uploadImage = document.getElementById('uploadImage');
 const topText = document.getElementById('topText');
-bottomText = document.getElementById('bottomText');
+const bottomText = document.getElementById('bottomText');
 const fontSelector = document.getElementById('fontSelector');
 const fontSize = document.getElementById('fontSize');
 const textColor = document.getElementById('textColor');
@@ -35,6 +35,7 @@ const canvas = document.getElementById('memeCanvas');
 const ctx = canvas.getContext('2d');
 const downloadButton = document.getElementById('downloadMeme');
 const shareButton = document.getElementById('shareMeme');
+const notificationDiv = document.getElementById('notification');
 
 const CANVAS_WIDTH = 350;
 const CANVAS_HEIGHT = 350;
@@ -46,7 +47,7 @@ let imageLoaded = false;
 
 function checkImageLoaded() {
     if (!imageLoaded) {
-        alert("❌ Veuillez sélectionner une image avant de continuer.");
+        showNotification("❌ Veuillez sélectionner une image avant de continuer.");
         return false;
     }
     return true;
@@ -55,7 +56,7 @@ function checkImageLoaded() {
 uploadImage.addEventListener('change', function(event) {
     const file = event.target.files[0];
     if (!file) {
-        alert("❌ Aucun fichier sélectionné. Veuillez choisir une image.");
+        showNotification("❌ Aucun fichier sélectionné. Veuillez choisir une image.");
         return;
     }
     const reader = new FileReader();
@@ -79,7 +80,7 @@ function drawMeme() {
     ctx.strokeStyle = 'black';
     ctx.lineWidth = 3;
     ctx.textAlign = 'center';
-    
+
     ctx.fillText(topText.value.toUpperCase(), CANVAS_WIDTH / 2, parseInt(fontSize.value));
     ctx.strokeText(topText.value.toUpperCase(), CANVAS_WIDTH / 2, parseInt(fontSize.value));
     ctx.fillText(bottomText.value.toUpperCase(), CANVAS_WIDTH / 2, CANVAS_HEIGHT - 20);
@@ -94,29 +95,38 @@ textColor.addEventListener('input', drawMeme);
 
 downloadButton.addEventListener('click', function() {
     if (!checkImageLoaded()) return;
-    
-    const memeURL = canvas.toDataURL();
-    let memes = JSON.parse(localStorage.getItem('memes')) || [];
-    memes.push(memeURL);
-    localStorage.setItem('memes', JSON.stringify(memes));
-    displayGallery();
 
-    const fileName = prompt('Entrez le nom de votre mème :', 'meme');
-    if (!fileName || fileName.trim() === '') {
-        alert("❌ Nom invalide. Téléchargement annulé.");
-        return;
+    try {
+        const memeURL = canvas.toDataURL();
+        let memes = JSON.parse(localStorage.getItem('memes')) || [];
+        memes.push(memeURL);
+        localStorage.setItem('memes', JSON.stringify(memes));
+        displayGallery();
+
+        const fileName = prompt('Entrez le nom de votre mème :', 'meme');
+        console.log('Nom de fichier :', fileName);
+        if (!fileName || fileName.trim() === '') {
+            console.log('Nom de fichier invalide.');
+            showNotification("❌ Nom invalide. Téléchargement annulé.");
+            return;
+        }
+
+        showNotification("✅ Téléchargement en cours...");
+        console.log("Téléchargement en cours...");
+
+        const link = document.createElement('a');
+        link.download = fileName.trim() + '.png';
+        link.href = memeURL;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        showNotification("✅ Téléchargement terminé !");
+        console.log("Téléchargement terminé !");
+    } catch (error) {
+        console.error('Erreur lors du téléchargement :', error);
+        showNotification("❌ Une erreur est survenue lors du téléchargement.");
     }
-
-    alert("✅ Téléchargement en cours...");
-
-    const link = document.createElement('a');
-    link.download = fileName.trim() + '.png';
-    link.href = memeURL;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    alert("✅ Téléchargement terminé !");
 });
 
 shareButton.addEventListener('click', function() {
@@ -132,7 +142,7 @@ shareButton.addEventListener('click', function() {
             text: 'Regarde mon mème'
         }).catch(err => console.log('⚠️ Échec du partage : ', err));
     } else {
-        alert('❌ Votre appareil ne supporte pas le partage direct.');
+        showNotification('❌ Votre appareil ne supporte pas le partage direct.');
     }
 });
 
@@ -143,4 +153,12 @@ function dataURLtoBlob(dataURL) {
         u8arr[n] = bstr.charCodeAt(n);
     }
     return new Blob([u8arr], {type:mime});
+}
+
+function showNotification(message) {
+    notificationDiv.textContent = message;
+    notificationDiv.style.display = 'block';
+    setTimeout(() => {
+        notificationDiv.style.display = 'none';
+    }, 5000); // La notification disparaît après 5 secondes
 }

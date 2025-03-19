@@ -98,21 +98,14 @@ downloadButton.addEventListener('click', function() {
 
     try {
         const memeURL = canvas.toDataURL();
-        let memes = JSON.parse(localStorage.getItem('memes')) || [];
-        memes.push(memeURL);
-        localStorage.setItem('memes', JSON.stringify(memes));
-        displayGallery();
 
         const fileName = prompt('Entrez le nom de votre mème :', 'meme');
-        console.log('Nom de fichier :', fileName);
         if (!fileName || fileName.trim() === '') {
-            console.log('Nom de fichier invalide.');
             showNotification("❌ Nom invalide. Téléchargement annulé.");
             return;
         }
 
         showNotification("✅ Téléchargement en cours...");
-        console.log("Téléchargement en cours...");
 
         const link = document.createElement('a');
         link.download = fileName.trim() + '.png';
@@ -122,7 +115,6 @@ downloadButton.addEventListener('click', function() {
         document.body.removeChild(link);
 
         showNotification("✅ Téléchargement terminé !");
-        console.log("Téléchargement terminé !");
     } catch (error) {
         console.error('Erreur lors du téléchargement :', error);
         showNotification("❌ Une erreur est survenue lors du téléchargement.");

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Mèmes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Générateur de Mèmes</h1>
+    <input type="file" id="uploadImage" accept="image/*">
+    <br><br>
+    <canvas id="memeCanvas"></canvas>
+    <br><br>
+    <input type="text" id="topText" placeholder="Texte en haut">
+    <input type="text" id="bottomText" placeholder="Texte en bas">
+    <br><br>
+    
+    <label for="fontSelector">Police :</label>
+    <select id="fontSelector">
+        <option value="Arial">Arial</option>
+        <option value="Verdana">Verdana</option>
+        <option value="Times New Roman">Times New Roman</option>
+        <option value="Courier New">Courier New</option>
+    </select>
+
+    <label for="fontSize">Taille :</label>
+    <input type="number" id="fontSize" value="30" min="10" max="50">
+
+    <label for="textColor">Couleur :</label>
+    <input type="color" id="textColor" value="#ffffff">
+    <br><br>
+
+    <button id="downloadMeme">Télécharger le mème</button>
+    <button id="shareMeme">Partager le mème</button>
+    <button id="geneMeme">
+        <a href="interface.html">Générer un nouveau mème</a>
+    </button>
+    <button id="imageSave">
+        <a href="galerie.html">Voir la Galerie</a>
+    </button>
+
+    <script src="script.js"></script>
+</body>
+</html>

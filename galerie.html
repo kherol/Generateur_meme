@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galerie des Mèmes</title>
+    <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+    <h1>Galerie des Mèmes</h1>
+    <button onclick="clearGallery()">Vider la Galerie</button>
+    <button id="geneMeme">
+        <a href="interface.html">Générer un nouveau meme</a>
+    </button>
+    <br><br>
+    <div id="gallery"></div>
+
+    <script>
+        function displayGallery() {
+            const galleryDiv = document.getElementById('gallery');
+            galleryDiv.innerHTML = ''; // Effacer l'ancien contenu
+            let memes = JSON.parse(localStorage.getItem('memes')) || [];
+
+            memes.forEach(url => {
+                const img = document.createElement('img');
+                img.src = url;
+                galleryDiv.appendChild(img);
+            });
+        }
+
+        function clearGallery() {
+            localStorage.removeItem('memes'); // Supprimer les mèmes stockés
+            displayGallery(); // Mettre à jour l'affichage
+        }
+
+        window.onload = displayGallery;
+    </script>
+</body>
+</html>
